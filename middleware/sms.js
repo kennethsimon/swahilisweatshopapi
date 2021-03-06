@@ -1,8 +1,8 @@
+const fetch = require("node-fetch");
+
 module.exports = {
 
   send: async (mobile, code) => {
-    // SHA256 = F4A74F7A81E82BEC394350A4616028DB50DC089A57F96E9BE05F04774510F9C9
-    // SHA256 = f4a74f7a81e82bec394350a4616028db50dc089a57f96e9be05f04774510f9c9
     const body = {
         channel: {
           channel: 120094,

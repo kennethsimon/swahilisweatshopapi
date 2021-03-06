@@ -21,8 +21,7 @@ mongoose.connect(process.env.MongoDBURL, {
   useNewUrlParser: true,
   useFindAndModify: false,
   useUnifiedTopology: true
-}).catch(error => {
-    console.log(error.message)
+}).catch(_error => {
   console.error('Could not connect to db');
 });
 
