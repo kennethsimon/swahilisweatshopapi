@@ -7,12 +7,16 @@ const Subcategory = require('../models/subcategory');
 router.get('/', async (req, res, next) => {
     const { id } = req.query;
     let subcategories;
-    if (id) {
-        subcategories = await Subcategory.findById(id);
-        return res.status(200).send(subcategories)
-    } else {
-        subcategories = await Subcategory.find({});
-        return res.status(200).send(subcategories)
+    try {
+      if (id) {
+          subcategories = await Subcategory.findById(id).populate('category');
+          return res.status(200).send(subcategories)
+      } else {
+          subcategories = await Subcategory.find({});
+          return res.status(200).send(subcategories)
+      }
+    } catch (error) {
+      return res.status(500).send(error.message)
     }
 });
 

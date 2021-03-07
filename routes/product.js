@@ -7,12 +7,16 @@ const Product = require('../models/product');
 router.get('/', async (req, res, next) => {
     const { id } = req.query;
     let products;
-    if (id) {
+    try {
+      if (id) {
         products = await Product.findById(id).populate('category').populate('subcategory').populate('brand');
         return res.status(200).send(products)
-    } else {
+      } else {
         products = await Product.find({}).populate('category').populate('subcategory').populate('brand');
         return res.status(200).send(products)
+      }
+    } catch (error) {
+      return res.status(500).send(error.message)
     }
 });
 

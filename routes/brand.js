@@ -7,12 +7,16 @@ const Brand = require('../models/brand');
 router.get('/', async (req, res, next) => {
     const { id } = req.query;
     let brands;
-    if (id) {
-        brands = await Brand.findById(id);
-        return res.status(200).send(brands)
-    } else {
-        brands = await Brand.find({});
-        return res.status(200).send(brands)
+    try {
+      if (id) {
+          brands = await Brand.findById(id);
+          return res.status(200).send(brands)
+      } else {
+          brands = await Brand.find({});
+          return res.status(200).send(brands)
+      }
+    } catch (error) {
+      return res.status(500).send(error.message)
     }
 });
 

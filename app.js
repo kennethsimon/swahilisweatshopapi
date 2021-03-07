@@ -25,6 +25,8 @@ mongoose.connect(process.env.MongoDBURL, {
   console.error('Could not connect to db');
 });
 
+require('./models/category');
+
 // Using API routes
 routes(app);
 

@@ -7,12 +7,16 @@ const Category = require('../models/category');
 router.get('/', async (req, res, next) => {
     const { id } = req.query;
     let categories;
-    if (id) {
-        categories = await Category.findById(id).populate('category');
-        return res.status(200).send(categories)
-    } else {
-        categories = await Category.find({});
-        return res.status(200).send(categories)
+    try {
+      if (id) {
+          categories = await Category.findById(id);
+          return res.status(200).send(categories)
+      } else {
+          categories = await Category.find({});
+          return res.status(200).send(categories)
+      }
+    } catch (error) {
+      return res.status(500).send(error.message)
     }
 });
 
