@@ -8,7 +8,7 @@ router.get('/', async (req, res, next) => {
     const { id } = req.query;
     let categories;
     if (id) {
-        categories = await Category.findById(id);
+        categories = await Category.findById(id).populate('category');
         return res.status(200).send(categories)
     } else {
         categories = await Category.find({});

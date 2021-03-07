@@ -8,10 +8,10 @@ router.get('/', async (req, res, next) => {
     const { id } = req.query;
     let products;
     if (id) {
-        products = await Product.findById(id);
+        products = await Product.findById(id).populate('category').populate('subcategory').populate('brand');
         return res.status(200).send(products)
     } else {
-        products = await Product.find({});
+        products = await Product.find({}).populate('category').populate('subcategory').populate('brand');
         return res.status(200).send(products)
     }
 });
