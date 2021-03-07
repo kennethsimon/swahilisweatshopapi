@@ -5,6 +5,21 @@ const jwt = require('../middleware/jwt');
 const sms = require('../middleware/sms');
 const User = require('../models/user');
 
+// Validate token
+router.post('/token', async (req, res, next) => {
+  const { token } = req.body;
+  if (token) {
+    if (jwt.verify(token)) {
+      const payload = jwt.decode(token).payload;
+      return res.status(200).send(payload);
+    } else {
+      return res.status(422).send('invalid_token');
+    }
+  } else {
+    res.status(422).send('no_token_provided');
+  }
+});
+
 // Validate mobile
 router.post('/validatemobile', async (req, res, next) => {
     const { mobile } = req.body;
