@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('../middleware/jwt');
+const Category = require('../models/category');
 const Subcategory = require('../models/subcategory');
 
 // Get category
@@ -9,10 +10,12 @@ router.get('/', async (req, res, next) => {
     let subcategories;
     try {
       if (id) {
-          subcategories = await Subcategory.findById(id).populate('category');
+          subcategories = await Subcategory.findById(id)
+          .populate({ path: 'category', model: Category });
           return res.status(200).send(subcategories)
       } else {
-          subcategories = await Subcategory.find({});
+          subcategories = await Subcategory.find({})
+          .populate({ path: 'category', model: Category });
           return res.status(200).send(subcategories)
       }
     } catch (error) {

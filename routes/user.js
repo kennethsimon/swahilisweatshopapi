@@ -8,15 +8,19 @@ const User = require('../models/user');
 // Validate token
 router.post('/token', async (req, res, next) => {
   const { token } = req.body;
-  if (token) {
-    if (jwt.verify(token)) {
-      const payload = jwt.decode(token).payload;
-      return res.status(200).send(payload);
+  try {
+    if (token) {
+      if (jwt.verify(token)) {
+        const payload = jwt.decode(token).payload;
+        return res.status(200).send(payload);
+      } else {
+        return res.status(422).send('invalid_token');
+      }
     } else {
-      return res.status(422).send('invalid_token');
+      res.status(422).send('no_token_provided');
     }
-  } else {
-    res.status(422).send('no_token_provided');
+  } catch (error) {
+    return res.status(500).send(error.message)
   }
 });
 

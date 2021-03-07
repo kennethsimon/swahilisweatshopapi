@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('../middleware/jwt');
+const Brand = require('../models/brand');
 const Product = require('../models/product');
+const Category = require('../models/category');
+const Subcategory = require('../models/subcategory');
 
 // Get product
 router.get('/', async (req, res, next) => {
@@ -9,10 +12,16 @@ router.get('/', async (req, res, next) => {
     let products;
     try {
       if (id) {
-        products = await Product.findById(id).populate('category').populate('subcategory').populate('brand');
+        products = await Product.findById(id)
+        .populate({ path: 'brand', model: Brand })
+        .populate({ path: 'category', model: Category })
+        .populate({ path: 'subcategory', model: Subcategory });
         return res.status(200).send(products)
       } else {
-        products = await Product.find({}).populate('category').populate('subcategory').populate('brand');
+        products = await Product.find({})
+        .populate({ path: 'brand', model: Brand })
+        .populate({ path: 'category', model: Category })
+        .populate({ path: 'subcategory', model: Subcategory });
         return res.status(200).send(products)
       }
     } catch (error) {

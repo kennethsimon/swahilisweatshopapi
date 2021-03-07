@@ -7,12 +7,16 @@ const Event = require('../models/event');
 router.get('/', async (req, res, next) => {
     const { id } = req.query;
     let events;
-    if (id) {
-        events = await Event.findById(id);
-        return res.status(200).send(events)
-    } else {
-        events = await Event.find({});
-        return res.status(200).send(events)
+    try {
+      if (id) {
+          events = await Event.findById(id);
+          return res.status(200).send(events)
+      } else {
+          events = await Event.find({});
+          return res.status(200).send(events)
+      }
+    } catch (error) {
+      return res.status(500).send(error.message)
     }
 });
 

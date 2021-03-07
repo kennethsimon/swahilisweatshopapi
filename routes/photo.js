@@ -7,12 +7,16 @@ const Photo = require('../models/photo');
 router.get('/', async (req, res, next) => {
     const { id } = req.query;
     let photos;
-    if (id) {
-        photos = await Photo.findById(id);
-        return res.status(200).send(photos)
-    } else {
-        photos = await Photo.find({});
-        return res.status(200).send(photos)
+    try {
+      if (id) {
+          photos = await Photo.findById(id);
+          return res.status(200).send(photos)
+      } else {
+          photos = await Photo.find({});
+          return res.status(200).send(photos)
+      }
+    } catch (error) {
+      return res.status(500).send(error.message)
     }
 });
 
