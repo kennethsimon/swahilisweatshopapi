@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('../middleware/jwt');
 const Event = require('../models/event');
+const Eventvote = require('../models/eventvote');
 
 // Get event
 router.get('/', async (req, res, next) => {
@@ -48,14 +49,18 @@ router.post('/create', async (req, res, next) => {
 
 // Vote for event
 router.post('/vote', async (req, res, next) => {
-    const { token, votes, eventid } = req.body;
-    if (token && votes && eventid) {
+    const { token, votes, eventid, type, awareness, participateagain } = req.body;
+    if (token && votes && eventid && type && awareness && participateagain) {
         try {
             if (jwt.verify(token)) {
-              var peventquery = { _id: eventid };
-              var peventupdate = { $inc: { 'rates.votes': votes, 'rates.total': 10 } };
-              var pevent = await Event.findOneAndUpdate(peventquery, peventupdate, { new: true });
-              return res.status(200).send(pevent);
+              const userid = jwt.decode(token).payload.id;
+              const peventquery = { _id: eventid };
+              const peventupdate = { $inc: { 'rates.votes': votes, 'rates.total': 10 } };
+              await Event.findOneAndUpdate(peventquery, peventupdate, { new: true });
+              const evquery = { event: eventid, user: userid };
+              const evupdate = { votes, type, awareness, participateagain };
+              const ev = await Eventvote.findOneAndUpdate(evquery, evupdate, { upsert: true, new: true });
+              return res.status(200).send(ev);
             } else {
               return res.status(422).send('invalid_token');
             }
@@ -63,7 +68,7 @@ router.post('/vote', async (req, res, next) => {
           return res.status(500).send(error.message);
         }
     } else {
-        return res.status(422).send('one_of_token/votes/eventid_not_provided');
+        return res.status(422).send('one_of_token/votes/eventid/type/awareness/participateagain_not_provided');
     }
 });
 

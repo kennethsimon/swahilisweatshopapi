@@ -4,6 +4,7 @@ const event = require('./event');
 const brand = require('./brand');
 const product = require('./product');
 const category = require('./category');
+const eventvote = require('./eventvote');
 const subcategory = require('./subcategory');
 
 module.exports = (server) => {
@@ -13,5 +14,6 @@ module.exports = (server) => {
   server.use('/brand', brand);
   server.use('/product', product);
   server.use('/category', category);
+  server.use('/eventvote', eventvote);
   server.use('/subcategory', subcategory);
 };
