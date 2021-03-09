@@ -55,12 +55,12 @@ router.post('/vote', async (req, res, next) => {
             if (jwt.verify(token)) {
               const userid = jwt.decode(token).payload.id;
               const peventquery = { _id: eventid };
-              const peventupdate = { $inc: { 'rates.votes': votes, 'rates.total': 10 } };
-              await Event.findOneAndUpdate(peventquery, peventupdate, { new: true });
+              const peventupdate = { $inc: { 'rates.votes': votes, 'rates.total': 8 } };
+              const pevent = await Event.findOneAndUpdate(peventquery, peventupdate, { new: true });
               const evquery = { event: eventid, user: userid };
               const evupdate = { votes, type, awareness, participateagain };
-              const ev = await Eventvote.findOneAndUpdate(evquery, evupdate, { upsert: true, new: true });
-              return res.status(200).send(ev);
+              await Eventvote.findOneAndUpdate(evquery, evupdate, { upsert: true, new: true });
+              return res.status(200).send(pevent);
             } else {
               return res.status(422).send('invalid_token');
             }
