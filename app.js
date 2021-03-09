@@ -21,6 +21,7 @@ var allowedOrigins = [
   'https://swahilisweatshop.com',
   'http://swahilisweatshopdev.vercel.app',
   'https://swahilisweatshopdev.vercel.app',
+  "http://localhost:3000"
 ];
 app.use(cors({
   origin: (origin, callback) => {
