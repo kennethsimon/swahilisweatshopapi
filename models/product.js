@@ -19,6 +19,9 @@ var product = new Schema({
     type: [String],
     required: true,
   },
+  tags: {
+    type: [String],
+  },
   price: {
     type: String,
     required: true,
