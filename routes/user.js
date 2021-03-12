@@ -109,6 +109,30 @@ router.post('/create', async (req, res, next) => {
     }
 });
 
+// Create initial admin
+// router.post('/createinitialadmin', async (req, res, next) => {
+//   const { name, address, mobile, password } = req.body;
+//   if (name && address && mobile && password) {
+//       try {
+//         const passwordhash = bcrypt.sign(password.toString());
+//         const user = {
+//           name,
+//           mobile,
+//           address,
+//           role: 'admin',
+//           isVerified: true,
+//           password: passwordhash,
+//         };
+//         const userCreated = await User.create(user);
+//         return res.status(200).send(userCreated);
+//       } catch(error) {
+//         return res.status(500).send(error.message);
+//       }
+//   } else {
+//       return res.status(422).send('one_of_name/address/mobile/password_not_provided');
+//   }
+// });
+
 // Create admin
 router.post('/createadmin', async (req, res, next) => {
   const { token, name, address, mobile, password } = req.body;

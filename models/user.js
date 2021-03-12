@@ -7,6 +7,7 @@ var user = new Schema({
   },
   mobile: {
     type: String,
+    unique: true,
     required: true,
   },
   address: {
