@@ -29,6 +29,11 @@ router.post('/create', async (req, res, next) => {
     if (token && title && category) {
         try {
             if (jwt.verify(token)) {
+              const payload = jwt.decode(token).payload;
+              const role = payload.role;
+              if (role !== 'admin') {
+                return res.status(403).send('user_not_admin');
+              }
               var subcategory = new Subcategory({
                 title,
                 category,
@@ -44,6 +49,32 @@ router.post('/create', async (req, res, next) => {
     } else {
         return res.status(422).send('one_of_token/title/category_not_provided');
     }
+});
+
+// Edit subcategory
+router.post('/edit', async (req, res, next) => {
+  const { token, subcategoryid, title } = req.body;
+  if (token && subcategoryid && title) {
+      try {
+          if (jwt.verify(token)) {
+            const payload = jwt.decode(token).payload;
+            const role = payload.role;
+            if (role !== 'admin') {
+              return res.status(403).send('user_not_admin');
+            }
+            const sbquery = { _id: subcategoryid };
+            const sbupdate = { $set: { title: title } };
+            const subcat = await Subcategory.findOneAndUpdate(sbquery, sbupdate, { new: true });
+            return res.status(200).send(subcat);
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else {
+      return res.status(422).send('one_of_token/subcategoryid/title_not_provided');
+  }
 });
 
 module.exports = router;

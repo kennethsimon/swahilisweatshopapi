@@ -26,6 +26,11 @@ router.post('/create', async (req, res, next) => {
     if (token && title && about && venue && url && date) {
         try {
             if (jwt.verify(token)) {
+              const payload = jwt.decode(token).payload;
+              const role = payload.role;
+              if (role !== 'admin') {
+                return res.status(403).send('user_not_admin');
+              }
               var photo = new Photo({
                 url,
                 date,
@@ -44,6 +49,60 @@ router.post('/create', async (req, res, next) => {
     } else {
         return res.status(422).send('one_of_token/title/about/venue/url/date_not_provided');
     }
+});
+
+// Edit photo
+router.post('/edit', async (req, res, next) => {
+  const { token, photoid, title, about, url } = req.body;
+  if (token && photoid && title && about && url) {
+      try {
+          if (jwt.verify(token)) {
+            const payload = jwt.decode(token).payload;
+            const role = payload.role;
+            if (role !== 'admin') {
+              return res.status(403).send('user_not_admin');
+            }
+            const pupdate = { $set: {
+              url,
+              title,
+              about,
+            }};
+            const photoUpdated = await Photo.findByIdAndUpdate(photoid, pupdate, { new: true });
+            return res.status(200).send(photoUpdated);
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else {
+      return res.status(422).send('one_of_token/title/about/url_not_provided');
+  }
+});
+
+// Activate/Deactivate photo
+router.post('/toggle', async (req, res, next) => {
+  const { token, photoid, isActive } = req.body;
+  if (token && photoid && isActive) {
+      try {
+          if (jwt.verify(token)) {
+            const payload = jwt.decode(token).payload;
+            const role = payload.role;
+            if (role !== 'admin') {
+              return res.status(403).send('user_not_admin');
+            }
+            var pupdate = { $set: { isActive: isActive } };
+            var photoUpdated = await Photo.findByIdAndUpdate(photoid, pupdate, { new: true });
+            return res.status(200).send(photoUpdated);
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else {
+      return res.status(422).send('one_of_token/photoid/isActive_not_provided');
+  }
 });
 
 // Vote for photo

@@ -17,7 +17,6 @@ var user = new Schema({
   },
   code: {
     type: String,
-    required: true,
   },
   isVerified: {
     type: Boolean,

@@ -109,6 +109,63 @@ router.post('/create', async (req, res, next) => {
     }
 });
 
+// Create admin
+router.post('/createadmin', async (req, res, next) => {
+  const { token, name, address, mobile, password } = req.body;
+  if (token && name && address && mobile && password) {
+      try {
+          if (jwt.verify(token)) {
+            const payload = jwt.decode(token).payload;
+            const role = payload.role;
+            if (role !== 'admin') {
+              return res.status(403).send('user_not_admin');
+            }
+            const passwordhash = bcrypt.sign(password.toString());
+            const user = {
+              name,
+              mobile,
+              address,
+              role: 'admin',
+              isVerified: true,
+              password: passwordhash,
+            };
+            const userCreated = await User.create(user);
+            return res.status(200).send(userCreated);
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else {
+      return res.status(422).send('one_of_token/name/address/mobile/password_not_provided');
+  }
+});
+
+// Create admin
+router.post('/deleteadmin', async (req, res, next) => {
+  const { token, adminid } = req.body;
+  if (token && adminid) {
+      try {
+          if (jwt.verify(token)) {
+            const payload = jwt.decode(token).payload;
+            const role = payload.role;
+            if (role !== 'admin') {
+              return res.status(403).send('user_not_admin');
+            }
+            await User.deleteOne({ _id: adminid });
+            return res.status(200).send("user_deleted");
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else {
+      return res.status(422).send('one_of_token/name/address/mobile/password_not_provided');
+  }
+});
+
 // Authenticate user
 router.post('/authenticate', async (req, res, next) => {
     const { mobile, password } = req.body;
@@ -119,6 +176,7 @@ router.post('/authenticate', async (req, res, next) => {
             var authpayload = {
                 _id: user._id,
                 name: user.name,
+                role: user.role,
                 address: user.address,
             }
             var authtoken = jwt.sign(authpayload);

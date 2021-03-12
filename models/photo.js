@@ -26,6 +26,10 @@ var photo = new Schema({
     type: Number,
     default: 0,
   },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
   since: {
     type: Date,
     default: Date.now

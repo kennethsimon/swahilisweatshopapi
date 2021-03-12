@@ -26,6 +26,11 @@ router.post('/create', async (req, res, next) => {
     if (token && title) {
         try {
             if (jwt.verify(token)) {
+              const payload = jwt.decode(token).payload;
+              const role = payload.role;
+              if (role !== 'admin') {
+                return res.status(403).send('user_not_admin');
+              }
               var brand = new Brand({
                 title,
               });
@@ -40,6 +45,32 @@ router.post('/create', async (req, res, next) => {
     } else {
         return res.status(422).send('one_of_token/title_not_provided');
     }
+});
+
+// Edit brand
+router.post('/edit', async (req, res, next) => {
+  const { token, brandid, title } = req.body;
+  if (token && brandid && title) {
+      try {
+          if (jwt.verify(token)) {
+            const payload = jwt.decode(token).payload;
+            const role = payload.role;
+            if (role !== 'admin') {
+              return res.status(403).send('user_not_admin');
+            }
+            const bquery = { _id: brandid };
+            const bupdate = { $set: { title: title } };
+            const brand = await Brand.findOneAndUpdate(bquery, bupdate, { new: true });
+            return res.status(200).send(brand);
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else {
+      return res.status(422).send('one_of_token/brandid/title_not_provided');
+  }
 });
 
 module.exports = router;

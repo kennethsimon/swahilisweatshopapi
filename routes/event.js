@@ -27,6 +27,10 @@ router.post('/create', async (req, res, next) => {
     if (token && title && about && venue && gallery && date) {
         try {
             if (jwt.verify(token)) {
+              const role = payload.role;
+              if (role !== 'admin') {
+                return res.status(403).send('user_not_admin');
+              }
               var event = new Event({
                 date,
                 title,
@@ -45,6 +49,59 @@ router.post('/create', async (req, res, next) => {
     } else {
         return res.status(422).send('one_of_token/title/about/venue/gallery/date_not_provided');
     }
+});
+
+// Edit event
+router.post('/edit', async (req, res, next) => {
+  const { token, eventid, title, about, gallery } = req.body;
+  if (token && eventid && title && about && gallery) {
+      try {
+          if (jwt.verify(token)) {
+            const role = payload.role;
+            if (role !== 'admin') {
+              return res.status(403).send('user_not_admin');
+            }
+            const eupdate = { $set: {
+              title,
+              about,
+              gallery
+            }};
+            const eventUpdated = await Event.findByIdAndUpdate(eventid, eupdate, { new: true });
+            return res.status(200).send(eventUpdated);
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else {
+      return res.status(422).send('one_of_token/title/about/gallery_not_provided');
+  }
+});
+
+// Activate/Deactivate event
+router.post('/toggle', async (req, res, next) => {
+  const { token, eventid, isActive } = req.body;
+  if (token && eventid && isActive) {
+      try {
+          if (jwt.verify(token)) {
+            const payload = jwt.decode(token).payload;
+            const role = payload.role;
+            if (role !== 'admin') {
+              return res.status(403).send('user_not_admin');
+            }
+            var eupdate = { $set: { isActive: isActive } };
+            var eventUpdated = await Event.findByIdAndUpdate(eventid, eupdate, { new: true });
+            return res.status(200).send(eventUpdated);
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else {
+      return res.status(422).send('one_of_token/eventid/isActive_not_provided');
+  }
 });
 
 // Vote for event

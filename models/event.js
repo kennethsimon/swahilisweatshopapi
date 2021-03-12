@@ -32,6 +32,10 @@ var event = new Schema({
       default: 0,
     },
   },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
   since: {
     type: Date,
     default: Date.now

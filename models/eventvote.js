@@ -29,6 +29,11 @@ var eventvote = new Schema({
     type: Boolean,
     required: true,
   },
+  role: {
+    type: String,
+    required: true,
+    default: 'client',
+  },
   since: {
     type: Date,
     default: Date.now
