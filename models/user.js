@@ -19,6 +19,11 @@ var user = new Schema({
   code: {
     type: String,
   },
+  role: {
+    type: String,
+    required: true,
+    default: 'client',
+  },
   isVerified: {
     type: Boolean,
     default: false,
