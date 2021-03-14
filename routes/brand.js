@@ -28,7 +28,7 @@ router.post('/create', async (req, res, next) => {
             if (jwt.verify(token)) {
               const payload = jwt.decode(token).payload;
               const role = payload.role;
-              if (role !== 'admin') {
+              if (!["root", "admin"].includes(role)) {
                 return res.status(403).send('user_not_admin');
               }
               var brand = new Brand({
@@ -55,7 +55,7 @@ router.post('/edit', async (req, res, next) => {
           if (jwt.verify(token)) {
             const payload = jwt.decode(token).payload;
             const role = payload.role;
-            if (role !== 'admin') {
+            if (!["root", "admin"].includes(role)) {
               return res.status(403).send('user_not_admin');
             }
             const bquery = { _id: brandid };
