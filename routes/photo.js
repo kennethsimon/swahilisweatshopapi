@@ -53,8 +53,8 @@ router.post('/create', async (req, res, next) => {
 
 // Edit photo
 router.post('/edit', async (req, res, next) => {
-  const { token, photoid, title, about, url } = req.body;
-  if (token && photoid && title && about && url) {
+  const { token, photoid, title, about, url, venue, date } = req.body;
+  if (token && photoid && title && about && url && venue && date) {
       try {
           if (jwt.verify(token)) {
             const payload = jwt.decode(token).payload;
@@ -64,8 +64,10 @@ router.post('/edit', async (req, res, next) => {
             }
             const pupdate = { $set: {
               url,
+              date,
               title,
               about,
+              venue,
             }};
             const photoUpdated = await Photo.findByIdAndUpdate(photoid, pupdate, { new: true });
             return res.status(200).send(photoUpdated);
