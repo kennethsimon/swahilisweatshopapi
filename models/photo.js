@@ -26,7 +26,7 @@ var photo = new Schema({
     type: Number,
     default: 0,
   },
-  isActive: {
+  isactive: {
     type: Boolean,
     default: true,
   },

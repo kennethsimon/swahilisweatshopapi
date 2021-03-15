@@ -84,8 +84,8 @@ router.post('/edit', async (req, res, next) => {
 
 // Activate/Deactivate photo
 router.post('/toggle', async (req, res, next) => {
-  const { token, photoid, isActive } = req.body;
-  if (token && photoid && isActive) {
+  const { token, photoid, isactive } = req.body;
+  if (token && photoid && isactive) {
       try {
           if (jwt.verify(token)) {
             const payload = jwt.decode(token).payload;
@@ -93,8 +93,9 @@ router.post('/toggle', async (req, res, next) => {
             if (!["root", "admin"].includes(role)) {
               return res.status(403).send('user_not_admin');
             }
-            var pupdate = { $set: { isActive: isActive } };
-            var photoUpdated = await Photo.findByIdAndUpdate(photoid, pupdate, { new: true });
+            const pquery = { _id: photoid };
+            const pupdate = { $set: { isactive: isactive } };
+            const photoUpdated = await Photo.findOneAndUpdate(pquery, pupdate, { new: true });
             return res.status(200).send(photoUpdated);
           } else {
             return res.status(422).send('invalid_token');

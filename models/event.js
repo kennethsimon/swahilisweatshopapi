@@ -32,7 +32,7 @@ var event = new Schema({
       default: 0,
     },
   },
-  isActive: {
+  isactive: {
     type: Boolean,
     default: true,
   },

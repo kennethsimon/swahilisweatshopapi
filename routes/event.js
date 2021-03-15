@@ -83,8 +83,8 @@ router.post('/edit', async (req, res, next) => {
 
 // Activate/Deactivate event
 router.post('/toggle', async (req, res, next) => {
-  const { token, eventid, isActive } = req.body;
-  if (token && eventid && isActive) {
+  const { token, eventid, isactive } = req.body;
+  if (token && eventid && isactive) {
       try {
           if (jwt.verify(token)) {
             const payload = jwt.decode(token).payload;
@@ -92,8 +92,9 @@ router.post('/toggle', async (req, res, next) => {
             if (!["root", "admin"].includes(role)) {
               return res.status(403).send('user_not_admin');
             }
-            var eupdate = { $set: { isActive: isActive } };
-            var eventUpdated = await Event.findByIdAndUpdate(eventid, eupdate, { new: true });
+            const equery = { _id: eventid };
+            const eupdate = { $set: { isactive: isactive } };
+            const eventUpdated = await Event.findOneAndUpdate(equery, eupdate, { new: true });
             return res.status(200).send(eventUpdated);
           } else {
             return res.status(422).send('invalid_token');

@@ -107,6 +107,30 @@ router.post('/edit', async (req, res, next) => {
   }
 });
 
+// Delete product
+router.post('/delete', async (req, res, next) => {
+  const { token, productid } = req.body;
+  if (token && productid) {
+      try {
+          if (jwt.verify(token)) {
+            const payload = jwt.decode(token).payload;
+            const role = payload.role;
+            if (!["root", "admin"].includes(role)) {
+              return res.status(403).send('user_not_admin');
+            }
+            await Product.deleteOne({ _id: productid });
+            return res.status(200).send('product_deleted');
+          } else {
+            return res.status(422).send('invalid_token');
+          }
+      } catch(error) {
+        return res.status(500).send(error.message);
+      }
+  } else { 
+      return res.status(422).send('one_of_token/productid_not_provided');
+  }
+});
+
 // Set tags
 router.post('/settags', async (req, res, next) => {
   const { token, productid, tags } = req.body;
