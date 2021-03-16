@@ -12,8 +12,7 @@ router.get('/', async (req, res, next) => {
           subcategories = await Subcategory.findById(id);
           return res.status(200).send(subcategories)
       } else {
-          subcategories = await Subcategory.find({})
-          .populate({ path: 'category', model: Category });
+          subcategories = await Subcategory.find({});
           return res.status(200).send(subcategories)
       }
     } catch (error) {
