@@ -83,8 +83,8 @@ router.post('/edit', async (req, res, next) => {
 
 // Activate/Deactivate event
 router.post('/toggle', async (req, res, next) => {
-  const { token, eventid, isactive } = req.body;
-  if (token && eventid && isactive) {
+  const { token, eventid, state } = req.body;
+  if (token && eventid && state) {
       try {
           if (jwt.verify(token)) {
             const payload = jwt.decode(token).payload;
@@ -93,7 +93,7 @@ router.post('/toggle', async (req, res, next) => {
               return res.status(403).send('user_not_admin');
             }
             const equery = { _id: eventid };
-            const eupdate = { $set: { isactive: isactive } };
+            const eupdate = { $set: { state: state } };
             const eventUpdated = await Event.findOneAndUpdate(equery, eupdate, { new: true });
             return res.status(200).send(eventUpdated);
           } else {
@@ -103,7 +103,7 @@ router.post('/toggle', async (req, res, next) => {
         return res.status(500).send(error.message);
       }
   } else {
-      return res.status(422).send('one_of_token/eventid/isActive_not_provided');
+      return res.status(422).send('one_of_token/eventid/state_not_provided');
   }
 });
 

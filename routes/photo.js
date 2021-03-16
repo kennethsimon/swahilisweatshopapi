@@ -84,8 +84,8 @@ router.post('/edit', async (req, res, next) => {
 
 // Activate/Deactivate photo
 router.post('/toggle', async (req, res, next) => {
-  const { token, photoid, isactive } = req.body;
-  if (token && photoid && isactive) {
+  const { token, photoid, state } = req.body;
+  if (token && photoid && state) {
       try {
           if (jwt.verify(token)) {
             const payload = jwt.decode(token).payload;
@@ -94,7 +94,7 @@ router.post('/toggle', async (req, res, next) => {
               return res.status(403).send('user_not_admin');
             }
             const pquery = { _id: photoid };
-            const pupdate = { $set: { isactive: isactive } };
+            const pupdate = { $set: { state: state } };
             const photoUpdated = await Photo.findOneAndUpdate(pquery, pupdate, { new: true });
             return res.status(200).send(photoUpdated);
           } else {
@@ -104,7 +104,7 @@ router.post('/toggle', async (req, res, next) => {
         return res.status(500).send(error.message);
       }
   } else {
-      return res.status(422).send('one_of_token/photoid/isActive_not_provided');
+      return res.status(422).send('one_of_token/photoid/state_not_provided');
   }
 });
 
