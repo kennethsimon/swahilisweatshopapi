@@ -1,7 +1,9 @@
 const user = require('./user');
+const size = require('./size');
 const photo = require('./photo');
 const event = require('./event');
 const brand = require('./brand');
+const color = require('./color');
 const product = require('./product');
 const category = require('./category');
 const eventvote = require('./eventvote');
@@ -12,6 +14,8 @@ module.exports = (server) => {
   server.use('/photo', photo);
   server.use('/event', event);
   server.use('/brand', brand);
+  server.use('/size', size);
+  server.use('/color', color);
   server.use('/product', product);
   server.use('/category', category);
   server.use('/eventvote', eventvote);

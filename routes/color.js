@@ -1,30 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('../middleware/jwt');
-const Subcategory = require('../models/subcategory');
+const Color = require('../models/color');
 
-// Get category
+// Get color
 router.get('/', async (req, res, next) => {
     const { id } = req.query;
-    let subcategories;
+    let colors;
     try {
       if (id) {
-          subcategories = await Subcategory.findById(id);
-          return res.status(200).send(subcategories)
+          colors = await Color.findById(id);
+          return res.status(200).send(colors)
       } else {
-          subcategories = await Subcategory.find({})
-          .populate({ path: 'category', model: Category });
-          return res.status(200).send(subcategories)
+          colors = await Color.find({});
+          return res.status(200).send(colors)
       }
     } catch (error) {
       return res.status(500).send(error.message)
     }
 });
 
-// Create category
+// Create color
 router.post('/create', async (req, res, next) => {
-    const { token, title, category } = req.body;
-    if (token && title && category) {
+    const { token, title } = req.body;
+    if (token && title) {
         try {
             if (jwt.verify(token)) {
               const payload = jwt.decode(token).payload;
@@ -32,12 +31,11 @@ router.post('/create', async (req, res, next) => {
               if (!["root", "admin"].includes(role)) {
                 return res.status(403).send('user_not_admin');
               }
-              var subcategory = new Subcategory({
+              var color = new Color({
                 title,
-                category,
               });
-              subcategory = await subcategory.save();
-              return res.status(200).send(subcategory);
+              color = await color.save();
+              return res.status(200).send(color);
             } else {
               return res.status(422).send('invalid_token');
             }
@@ -45,14 +43,14 @@ router.post('/create', async (req, res, next) => {
           return res.status(500).send(error.message);
         }
     } else {
-        return res.status(422).send('one_of_token/title/category_not_provided');
+        return res.status(422).send('one_of_token/title_not_provided');
     }
 });
 
-// Edit subcategory
+// Edit color
 router.post('/edit', async (req, res, next) => {
-  const { token, subcategoryid, title } = req.body;
-  if (token && subcategoryid && title) {
+  const { token, colorid, title } = req.body;
+  if (token && colorid && title) {
       try {
           if (jwt.verify(token)) {
             const payload = jwt.decode(token).payload;
@@ -60,10 +58,10 @@ router.post('/edit', async (req, res, next) => {
             if (!["root", "admin"].includes(role)) {
               return res.status(403).send('user_not_admin');
             }
-            const sbquery = { _id: subcategoryid };
-            const sbupdate = { $set: { title: title } };
-            const subcat = await Subcategory.findOneAndUpdate(sbquery, sbupdate, { new: true });
-            return res.status(200).send(subcat);
+            const cquery = { _id: colorid };
+            const cupdate = { $set: { title: title } };
+            const cat = await Color.findOneAndUpdate(cquery, cupdate, { new: true });
+            return res.status(200).send(cat);
           } else {
             return res.status(422).send('invalid_token');
           }
@@ -71,7 +69,7 @@ router.post('/edit', async (req, res, next) => {
         return res.status(500).send(error.message);
       }
   } else {
-      return res.status(422).send('one_of_token/subcategoryid/title_not_provided');
+      return res.status(422).send('one_of_token/colorid/title_not_provided');
   }
 });
 

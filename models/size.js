@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var subcategory = new Schema({
+var size = new Schema({
   title: {
     type: String,
     required: true
@@ -14,6 +14,6 @@ var subcategory = new Schema({
 
 mongoose.models = {};
 
-var Subcategory = mongoose.model('Subcategory', subcategory);
+var Size = mongoose.model('Size', size);
 
-module.exports = Subcategory;
+module.exports = Size;

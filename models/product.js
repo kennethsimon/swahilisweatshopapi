@@ -36,6 +36,16 @@ var product = new Schema({
     ref: 'Subcategory',
     required: true,
   },
+  // size: {
+  //   type: [ObjectId],
+  //   ref: 'Size',
+  //   required: true,
+  // },
+  // color: {
+  //   type: [ObjectId],
+  //   ref: 'Color',
+  //   required: true,
+  // },
   brand: {
     type: ObjectId,
     ref: 'Brand',
