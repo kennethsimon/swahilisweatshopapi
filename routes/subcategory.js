@@ -23,8 +23,8 @@ router.get('/', async (req, res, next) => {
 
 // Create category
 router.post('/create', async (req, res, next) => {
-    const { token, title, category } = req.body;
-    if (token && title && category) {
+    const { token, title } = req.body;
+    if (token && title) {
         try {
             if (jwt.verify(token)) {
               const payload = jwt.decode(token).payload;
@@ -34,7 +34,6 @@ router.post('/create', async (req, res, next) => {
               }
               var subcategory = new Subcategory({
                 title,
-                category,
               });
               subcategory = await subcategory.save();
               return res.status(200).send(subcategory);
