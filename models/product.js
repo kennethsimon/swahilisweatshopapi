@@ -41,6 +41,11 @@ var product = new Schema({
     ref: 'Brand',
     required: true,
   },
+  client: {
+    type: ObjectId,
+    ref: 'Client',
+    required: true,
+  },
   size: {
     type: [String],
     required: true,

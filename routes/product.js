@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('../middleware/jwt');
 const Brand = require('../models/brand');
+const Client = require('../models/client');
 const Product = require('../models/product');
 const Category = require('../models/category');
 const Subcategory = require('../models/subcategory');
@@ -14,12 +15,14 @@ router.get('/', async (req, res, next) => {
       if (id) {
         products = await Product.findById(id)
         .populate({ path: 'brand', model: Brand })
+        .populate({ path: 'client', model: Client })
         .populate({ path: 'category', model: Category })
         .populate({ path: 'subcategory', model: Subcategory });
         return res.status(200).send(products)
       } else {
         products = await Product.find({})
         .populate({ path: 'brand', model: Brand })
+        .populate({ path: 'client', model: Client })
         .populate({ path: 'category', model: Category })
         .populate({ path: 'subcategory', model: Subcategory });
         return res.status(200).send(products)
@@ -31,8 +34,8 @@ router.get('/', async (req, res, next) => {
 
 // Create product
 router.post('/create', async (req, res, next) => {
-    const { token, title, about, image, gallery, price, category, subcategory, brand, size, color, gender, quantity, tags } = req.body;
-    if (token && title && about && image && gallery && price && category && subcategory && brand && size && color && quantity) {
+    const { token, title, about, image, gallery, price, category, subcategory, brand, size, color, gender, quantity, tags, client } = req.body;
+    if (token && title && about && image && gallery && price && category && subcategory && brand && size && color && quantity && client) {
         try {
             if (jwt.verify(token)) {
               const payload = jwt.decode(token).payload;
@@ -50,6 +53,7 @@ router.post('/create', async (req, res, next) => {
                 brand,
                 size,
                 tags,
+                client,
                 color,
                 gender,
                 quantity,
@@ -70,8 +74,8 @@ router.post('/create', async (req, res, next) => {
 
 // Edit product
 router.post('/edit', async (req, res, next) => {
-  const { token, productid, title, about, image, gallery, price, category, subcategory, brand, size, color, gender, quantity, tags } = req.body;
-  if (token && productid && title && about && image && gallery && price && category && subcategory && brand && size && color && quantity) {
+  const { token, productid, title, about, image, gallery, price, category, subcategory, brand, size, color, gender, quantity, tags, client } = req.body;
+  if (token && productid && title && about && image && gallery && price && category && subcategory && brand && size && color && quantity && client) {
       try {
           if (jwt.verify(token)) {
             const payload = jwt.decode(token).payload;
@@ -89,6 +93,7 @@ router.post('/edit', async (req, res, next) => {
               brand,
               size,
               tags,
+              client,
               color,
               gender,
               quantity,
