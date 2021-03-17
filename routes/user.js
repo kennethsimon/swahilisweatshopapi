@@ -248,22 +248,26 @@ router.post('/deleteadmin', async (req, res, next) => {
 router.post('/authenticate', async (req, res, next) => {
     const { mobile, password } = req.body;
     if (mobile && password) {
-        var user = await User.findOne({mobile});
-        var userpassword = user.password;
-        if (bcrypt.compare(password, userpassword)) {
-            var authpayload = {
-                _id: user._id,
-                name: user.name,
-                role: user.role,
-                address: user.address,
-            }
-            var authtoken = jwt.sign(authpayload);
-            res.status(200).send({
-              ...authpayload,
-              token: authtoken,
-            });
-        } else {
-            res.status(403).send('wrong_mobile_or_password');
+        try {
+          var user = await User.findOne({mobile});
+          var userpassword = user.password;
+          if (bcrypt.compare(password, userpassword)) {
+              var authpayload = {
+                  _id: user._id,
+                  name: user.name,
+                  role: user.role,
+                  address: user.address,
+              }
+              var authtoken = jwt.sign(authpayload);
+              res.status(200).send({
+                ...authpayload,
+                token: authtoken,
+              });
+          } else {
+              res.status(403).send('wrong_mobile_or_password');
+          }
+        } catch (err) {
+          res.status(500).send(err.message);
         }
     } else {
         res.status(422).send('user_mobile_or_password_not_provided');
