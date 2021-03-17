@@ -250,6 +250,9 @@ router.post('/authenticate', async (req, res, next) => {
     if (mobile && password) {
         try {
           var user = await User.findOne({mobile});
+          if (!user) {
+            return res.status(404).send('user_not_found');
+          }
           var userpassword = user.password;
           if (bcrypt.compare(password, userpassword)) {
               var authpayload = {
@@ -264,13 +267,13 @@ router.post('/authenticate', async (req, res, next) => {
                 token: authtoken,
               });
           } else {
-              res.status(403).send('wrong_mobile_or_password');
+              return res.status(403).send('wrong_mobile_or_password');
           }
         } catch (err) {
-          res.status(500).send(err.message);
+          return res.status(500).send(err.message);
         }
     } else {
-        res.status(422).send('user_mobile_or_password_not_provided');
+        return res.status(422).send('user_mobile_or_password_not_provided');
     }
 });
 
