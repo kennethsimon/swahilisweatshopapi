@@ -121,7 +121,7 @@ router.get('/checkout', async (req, res, next) => {
     return res.status(200).send(res.data);
   })
   .catch(err => {
-    console.log(err.message);
+    console.log(err.response.data);
     return res.status(500).send(err.message);
   });
 });
