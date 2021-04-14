@@ -98,13 +98,13 @@ router.get('/checkout', async (req, res, next) => {
   }
   axios
   .post(
-    'https://apigwtest.selcommobile.com/v1',
+    'https://apigwtest.selcommobile.com/v1/checkout',
     JSON.stringify({
       vendor: 'TILL60250206',
       order_id: '123',
       buyer_email: 'caashiere@gmail.com',
       buyer_name: 'Ralph Caashiere',
-      buyer_phone: '255654226112',
+      buyer_phone: '255718004865',
       amount: 5000,
       currency: 'TZS',
       no_of_items: 3
