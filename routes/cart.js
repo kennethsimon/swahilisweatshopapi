@@ -98,7 +98,7 @@ router.get('/checkout', async (req, res, next) => {
   }
   axios
   .post(
-    'https://apigwtest.selcommobile.com/v1/checkout',
+    'https://apigwtest.selcommobile.com/v1/checkout/create-order-minimal',
     JSON.stringify({
       vendor: 'TILL60250206',
       order_id: '123',
