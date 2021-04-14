@@ -99,7 +99,7 @@ router.get('/checkout', async (req, res, next) => {
   axios
   .post(
     'https://apigwtest.selcommobile.com/v1/checkout/create-order-minimal',
-    JSON.stringify({
+    {
       vendor: 'TILL60250206',
       order_id: '123',
       buyer_email: 'caashiere@gmail.com',
@@ -108,7 +108,7 @@ router.get('/checkout', async (req, res, next) => {
       amount: 5000,
       currency: 'TZS',
       no_of_items: 3
-    }),
+    },
     {
       headers: {
         ...headers,
@@ -121,7 +121,7 @@ router.get('/checkout', async (req, res, next) => {
     return res.status(200).send(res.data);
   })
   .catch(err => {
-    console.log(err.message);
+    console.log(err.response.data);
     return res.status(500).send(err.message);
   });
 });
